@@ -1,0 +1,10 @@
+= Bart
+
+Idea: a system for associating text files with metadata about their place in a
+work, etc. 
+
+Seeing the "big picture, but being able to drill into details" (Aaron)
+
+Associate notes with a file without needing to include those notes as comments.
+
+What might have made writing the last book easier?
