@@ -42,16 +42,6 @@ update to [document, cards, notes] is updated in database
     pass
 
 
-class TestProjectActions:
-    """
-can load the database
-can reorder documents
-can build a document
-
-    """
-    pass
-
-
 class TestDocument:
 
     def test_can_create_document(self):
