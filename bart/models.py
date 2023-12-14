@@ -48,7 +48,7 @@ class Project:
     name: str
     markup_language: MARKUP_LANGUAGES
     title: Optional[str] = None
-    manifest: list[int] = []  # document IDs
+    manifest: list[int] = field(default_factory=list)  # document IDs
     number_documents: bool = False  # option to prepend "01_"
     last_update: datetime = datetime.now()
     word_count_tracker: dict[str, int] = field(
