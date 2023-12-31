@@ -1,0 +1,22 @@
+:description: Explain how a "description" document metadata element is used \
+to record "card" information for the corkboard view
+
+In asciidoc, you can use the built-in
+https://docs.asciidoctor.org/asciidoc/latest/document/metadata/#description[`:description:`]
+document attribute.
+
+Since `bart` uses `markdown2` to render markdown documents, you can use any
+syntax supported by the
+https://github.com/trentm/python-markdown2/wiki/metadata[`metadata`] extra to
+provide the "description" metadata. For example, you might include the following
+at the top of a document:
+
+[source, yaml]
+----
+---
+description: >
+  When the hero awakes to discover that she has overslept her
+  economics exam.
+---
+----
+
