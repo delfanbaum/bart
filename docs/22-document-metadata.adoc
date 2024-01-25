@@ -1,5 +1,15 @@
+:name: Document Metadata
 :description: Explain how a "description" document metadata element is used \
 to record "card" information for the corkboard view
+
+[[document_names]]
+== Document Names
+
+You can (optionally) provide a name (`:name:` in asciidoc, or `name:` in Markdown
+YAML). This is used in the <<corkboard>> and <<outline>>.
+
+[[document_descriptions]]
+== Descriptions
 
 In asciidoc, you can use the built-in
 https://docs.asciidoctor.org/asciidoc/latest/document/metadata/#description[`:description:`]
@@ -19,4 +29,7 @@ description: >
   economics exam.
 ---
 ----
+
+These descriptions live with the documents themselves but aren't included in any
+builds; rather they are used when looking at the <<corkboard>> and <<outline>>.
 
