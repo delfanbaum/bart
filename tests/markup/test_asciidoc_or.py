@@ -62,3 +62,19 @@ and ongoing
                                         "longer than it really is meant to " +
                                         "and ongoing") 
         assert attrs["after"] == "something else"
+
+    def test_breaks_after_newline(self, test_adoc):
+        """
+        According to the asciidoctor spec, document attributes can only be set
+        until there is a new line (assuming that after this it's just the text);
+        we want to follow this also
+        """
+        test_adoc.write_text(r"""= Title
+:attr: test
+
+some other text...before a secret attr that we should ignore
+
+:attr-2: test
+""")
+        attrs = read_attributes(test_adoc)
+        assert len(attrs) == 1
