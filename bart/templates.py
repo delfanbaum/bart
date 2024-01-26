@@ -7,4 +7,4 @@ def project_root_template(markup: str,
         case "markdown":
             return f"""# {project_name}"""
         case _:
-            return "{project_name}"
+            return f"{project_name}"

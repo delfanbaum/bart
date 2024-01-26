@@ -20,11 +20,12 @@
 
 ## To Do
 
-- Tests for existing code
 - Reorder (rename) documents in project
 - Combine documents (required for building!)
 
 ## In Progress 
+- Tests for existing code
+
 
 ## Done
 

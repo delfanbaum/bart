@@ -1,6 +1,10 @@
+import re
+
+
 def get_valid_pathname(name) -> str:
     """
     TODO: handle commas, colons, etc.
     """
-    s = str(name).strip().replace(' ', '-')
-    return s.lower()
+    s = re.sub(r'[^a-zA-Z\d]', '-', name)
+    s = re.sub(r'-+', '-', s)
+    return s.lower().strip()
