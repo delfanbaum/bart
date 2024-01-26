@@ -1,4 +1,14 @@
-## Backlog
+## Features
+- See Outline (to text file, also gui)
+- Generate docs from outline
+- "Cards" or Corkboard
+- External Resources (character profiles, settings, etc.)
+- Associate CSS/styles with project (or global)
+
+## Questions
+- Terminal only workflows or, how do we play nice with VS Code, etc.?
+
+## Work Backlog
 
 - Split/combine operations update file naming for project
 - Reorder docs (and update filenames accordling)
@@ -18,6 +28,7 @@
 - Build a single doc or selection of docs
 - Add a "workout" feature that provides a random (user-provided) exercise prompt
 - AI summary/description generation
+- Output pdf, docx, epub
 
 ## To Do
 
@@ -26,7 +37,6 @@
 
 ## In Progress 
 - Tests for existing code
-
 
 ## Done
 
