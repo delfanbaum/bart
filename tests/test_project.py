@@ -1,6 +1,11 @@
 import pytest
 from bart.config import MarkupLanguages
-from bart.exceptions import MissingProjectRootException, NotInProjectException, ProjectDirExistsException
+from bart.exceptions import (
+    MissingProjectRootException,
+    NotInProjectException,
+    ProjectDirExistsException,
+    DocumentLevelException
+    )
 from bart.project import BartProject
 
 
@@ -76,6 +81,16 @@ class TestBartProject:
         assert new_doc.is_file()
         # that it sorts last
         assert test_project_adoc.get_project_docs()[-1] == new_doc
-        # has the correct prefix (we subtract 1 for the project root
-        assert int(new_doc.name.split('-')[0]) == \
+        # has the correct prefix (we subtract 1 for the project root)
+        assert (
+            int(new_doc.name.split('-')[0]) == 
             len(test_project_adoc.get_project_docs()) - 1
+                )
+    
+    def test_add_document_level_error(self, test_project_adoc):
+        """
+        We should not be allowed to add docs at an impossibly low level
+        """
+
+        with pytest.raises(DocumentLevelException):
+            test_project_adoc.add_document(name="test", level=3)

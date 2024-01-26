@@ -1,7 +1,12 @@
 from pathlib import Path
 
 from bart.config import BartConfig
-from bart.exceptions import NotInProjectException, MissingProjectRootException, ProjectDirExistsException
+from bart.exceptions import (
+    NotInProjectException,
+    MissingProjectRootException,
+    ProjectDirExistsException,
+    DocumentLevelException
+)
 from bart.templates import named_document_template, write_template
 from bart.utilites import get_next_doc_number, get_valid_pathname
 
@@ -69,6 +74,9 @@ class BartProject:
         Adds a document at the "section" level (what
         config.doc_numbering) is set to
         """
+        if level > self.config.doc_levels:
+            raise DocumentLevelException
+
         last_doc = self.get_project_docs()[-1]
 
         # i.e., 1, 10, 100, etc.
