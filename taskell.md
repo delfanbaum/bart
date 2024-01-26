@@ -1,21 +1,22 @@
 ## Backlog
 
-- Outline data structure
-- Outline GUI
-- Default edtior option
-- Open doc in editor from outline/GUI
+- Split/combine operations update file naming for project
+- Reorder docs (and update filenames accordling)
+- Handle sub-documents (i.e., 11- case)
 - Build an asciidoc doc
 - Build a md doc
 - Build a text doc (how to convert?)
 - Project word count tracking
+- "Due dates" feature
 - Project "goal" tracking
+- Progress view feature (word count vs goal vs deadline, etc)
+- Outline data structure
+- Outline GUI
+- Default edtior option
+- Open doc in editor from outline/GUI
 - Optional git hooks for word counts/goals
-- Split/combine operations update file naming for project
-- Reorder docs (and update filenames accordling)
 - Build a single doc or selection of docs
 - Add a "workout" feature that provides a random (user-provided) exercise prompt
-- "Due dates" feature
-- Progress view feature (word count vs goal vs deadline, etc)
 - AI summary/description generation
 
 ## To Do

@@ -1,4 +1,6 @@
 import re
+from pathlib import Path
+from typing import Optional
 
 
 def get_valid_pathname(name) -> str:
@@ -8,3 +10,21 @@ def get_valid_pathname(name) -> str:
     s = re.sub(r'[^a-zA-Z\d]', '-', name)
     s = re.sub(r'-+', '-', s)
     return s.lower().strip()
+
+
+def get_next_doc_number(last_doc: Optional[Path],
+                        project_levels: int,
+                        add_position: int) -> str:
+    """
+    Given a document path and the section document numbering,
+    return the "next" chapter or section 
+    """
+    if not last_doc:
+        next_number = "0"
+    else:
+        next_number = f"{int(last_doc.name.split('-')[0]) + add_position}"
+    
+    if project_levels == 1:  # special case for 01, 02, etc.
+        return next_number.zfill(2)
+    else:
+        return next_number.zfill(project_levels)

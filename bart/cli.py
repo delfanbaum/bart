@@ -27,6 +27,16 @@ def begin(
 
 
 @app.command()
+def add(document_name: str,
+        document_level: int = 1):
+    """
+    Adds a file with the specified document name to the end of the project.
+    """
+    project = BartProject()
+    project.add_document(document_name, document_level)
+
+
+@app.command()
 def config():
     """
     List the Bart config options for the current project/directory (or global
