@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from bart.config import BartConfig
-from bart.exceptions import NotInProjectException, MissingProjectRootException
+from bart.exceptions import NotInProjectException, MissingProjectRootException, ProjectDirExistsException
 from bart.templates import named_document_template, write_template
 from bart.utilites import get_next_doc_number, get_valid_pathname
 
@@ -32,7 +32,9 @@ class BartProject:
 
         numbering = get_next_doc_number(None, self.config.doc_levels, 0)
 
-        if not self.project_dir.is_dir():
+        if self.project_dir.exists():
+            raise ProjectDirExistsException
+        else:
             self.project_dir.mkdir()
 
         project_root = (self.project_dir / (numbering + "-" +
@@ -62,7 +64,7 @@ class BartProject:
         return project_files
     
 
-    def add_document(self, name: str, level: int=1) -> None:
+    def add_document(self, name: str, level: int=1) -> Path:
         """
         Adds a document at the "section" level (what
         config.doc_numbering) is set to
@@ -83,9 +85,4 @@ class BartProject:
                        document_name=name,
                        heading_level=level
                        )
-        
-
-    def reorder_documents(self, reordered_docs: list[Path]) -> None:
-        pass
-
-
+        return new_document

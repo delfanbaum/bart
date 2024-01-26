@@ -1,5 +1,6 @@
 from pathlib import Path
 from bart.config import BartConfig
+from bart.exceptions import ProjectDirExistsException, ProjectFileExistsException
 from bart.project import BartProject
 import typer
 
@@ -22,8 +23,14 @@ def begin(
     enclose them in quotes, e.g., `bart begin "my great project"`.
     """
     project_dir = Path.cwd() / get_valid_pathname(project_name)
-    project = BartProject(project_dir)
-    project.begin(project_name)
+
+    try:
+        BartProject(project_dir, new=True, project_name=project_name)
+        print(f"New project created at {project_dir.stem}")
+
+    except ProjectDirExistsException:
+        print("Ugh oh! There's already something at {project_dir.stem}!")
+        typer.Exit(code=1)
 
 
 @app.command()
@@ -33,7 +40,14 @@ def add(document_name: str,
     Adds a file with the specified document name to the end of the project.
     """
     project = BartProject()
-    project.add_document(document_name, document_level)
+
+    try:
+        project.add_document(document_name, document_level)
+
+    except ProjectFileExistsException:
+        # this really shouldn't happen, but theoretically possible
+        print("Ugh oh! A file already exists with that name. " +
+              "How'd you manage that?!") 
 
 
 @app.command()

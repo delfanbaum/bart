@@ -6,3 +6,6 @@ class ProjectFileExistsException(Exception):
 
 class MissingProjectRootException(Exception):
     pass
+
+class ProjectDirExistsException(Exception):
+    pass

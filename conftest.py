@@ -3,6 +3,8 @@ from bart.config import BartConfig
 import shutil
 import pytest
 
+from bart.project import BartProject
+
 
 @pytest.fixture()
 def test_adoc(tmp_path) -> Path:
@@ -16,7 +18,7 @@ def test_adoc(tmp_path) -> Path:
     return test_file
 
 @pytest.fixture()
-def test_project_adoc(tmp_path) -> Path:
+def test_project_adoc(tmp_path) -> BartProject:
     """
     Test project with various adoc files with a default config
     """
@@ -30,5 +32,5 @@ def test_project_adoc(tmp_path) -> Path:
     shutil.copytree('tests/projects/adoc',
                     test_dir,
                     dirs_exist_ok=True)
-    return test_dir
+    return BartProject(test_dir)
 
