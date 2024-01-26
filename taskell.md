@@ -36,7 +36,7 @@
 - Combine documents (required for building!)
 
 ## In Progress 
-- Tests for existing code
 
 ## Done
+- Tests for existing code
 

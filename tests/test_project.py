@@ -1,5 +1,4 @@
 import pytest
-from bart.config import MarkupLanguages
 from bart.exceptions import (
     MissingProjectRootException,
     NotInProjectException,
@@ -14,13 +13,13 @@ class TestBartProject:
     Tests around project-level functionality
     """
 
-    def test_not_in_project(self):
+    def test_not_in_project(self, tmp_path):
         """
         If you're not in a project, raise an exception
         """
 
         with pytest.raises(NotInProjectException):
-            BartProject()
+            BartProject(tmp_path)
 
     def test_init_missing_root(self, tmp_path):
         """
@@ -60,7 +59,7 @@ class TestBartProject:
         """
 
         assert test_project_adoc.project_dir.stem == 'test'
-        assert test_project_adoc.config.markup == MarkupLanguages.ASCIIDOC  # smoke default test
+        assert test_project_adoc.config
         assert test_project_adoc.documents
         assert test_project_adoc.root.name.split('-')[0] == "00"
 

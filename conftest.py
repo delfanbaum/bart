@@ -1,9 +1,22 @@
 from pathlib import Path
-from bart.config import BartConfig
+from bart.config import BartConfig, MarkupLanguages
 import shutil
 import pytest
 
 from bart.project import BartProject
+
+
+@pytest.fixture()
+def test_config(tmp_path) -> Path:
+    """
+    Test config... for testing. Is set to markdown to ensure that we are not
+    just using the defaults
+    """
+    config_path = tmp_path / 'bart.toml'
+    config = BartConfig(use_default=True)
+    config.markup = MarkupLanguages.MARKDOWN
+    config.write_to(config_path)
+    return config_path
 
 
 @pytest.fixture()

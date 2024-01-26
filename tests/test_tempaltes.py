@@ -1,4 +1,5 @@
 import pytest
+from bart.exceptions import ProjectFileExistsException
 from bart.templates import write_template, named_document_template
 
 
@@ -19,6 +20,19 @@ class TestWriteTemplate:
     """
     Tests the writing of various templates
     """
+
+    def test_file_exists(self, tmp_path):
+        """
+        Don't overwrite a file that already exists (unlikely edge case, but)
+        """
+        test_doc = tmp_path / "test.adoc"
+        test_doc.touch()
+        with pytest.raises(ProjectFileExistsException):
+            write_template(named_document_template,
+                           test_doc,
+                           markup="asciidoc",
+                           document_name="Test")
+
 
     def test_write_named_document_template(self, tmp_path):
         """
