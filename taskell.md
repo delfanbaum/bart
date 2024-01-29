@@ -1,4 +1,5 @@
 ## Features
+
 - See Outline (to text file, also gui)
 - Generate docs from outline
 - "Cards" or Corkboard
@@ -6,6 +7,7 @@
 - Associate CSS/styles with project (or global)
 
 ## Questions
+
 - Terminal only workflows or, how do we play nice with VS Code, etc.?
 
 ## Work Backlog
@@ -33,10 +35,11 @@
 ## To Do
 
 - Reorder (rename) documents in project
-- Combine documents (required for building!)
 
 ## In Progress 
 
-## Done
-- Tests for existing code
+- Combine documents (required for building!)
 
+## Done
+
+- Tests for existing code
