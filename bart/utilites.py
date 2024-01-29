@@ -20,7 +20,7 @@ def get_next_doc_number(last_doc: Optional[Path],
     return the "next" chapter or section 
     """
     if not last_doc:
-        next_number = "0"
+        next_number = "0" * project_levels
     else:
         next_number = f"{int(last_doc.name.split('-')[0]) + add_position}"
     
@@ -28,3 +28,14 @@ def get_next_doc_number(last_doc: Optional[Path],
         return next_number.zfill(2)
     else:
         return next_number.zfill(project_levels)
+
+def get_doc_position(project, doc: Path):
+    """
+    Gets the "position" of the document, i.e., is it a main doc? Is it a
+    sub-doc? Etc.
+    """
+    doc_level = doc.name.split('-')[0]
+
+    if (project.config.doc_levels == 1 or
+        doc_level.find('0') == -1):
+        return 1

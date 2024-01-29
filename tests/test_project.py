@@ -1,9 +1,12 @@
 import pytest
+import random
+from pathlib import Path
 from bart.exceptions import (
     MissingProjectRootException,
     NotInProjectException,
     ProjectDirExistsException,
-    DocumentLevelException
+    ProjectFileExistsException,
+    ReorderingException
     )
 from bart.project import BartProject
 
@@ -70,6 +73,26 @@ class TestBartProject:
 
         assert len(test_project_adoc.documents) == 4
 
+    @pytest.mark.parametrize("level", range(2,6))
+    def test_increase_level(self, test_project_adoc, level):
+        """
+        Tests that, if the doc_levels of the project changes, the
+        config and filenames are updated accordingly
+        """
+        test_project_adoc.increase_doc_levels(level)
+        check_doc_number = test_project_adoc.get_project_docs()[1].name.split('-')[0]
+        # check the document level
+        assert len(check_doc_number) == level
+        assert check_doc_number == f"1{'0' * (level-1) }"
+        # check the project config
+        with (test_project_adoc.project_dir / '.bart.toml').open('rt') as f:
+            assert f"doc_levels = {level}\n" in f.readlines()
+
+
+class TestProjectAdd:
+    """
+    Tests around adding docs to the project
+    """
 
     def test_add_document(self, test_project_adoc):
         """
@@ -91,5 +114,37 @@ class TestBartProject:
         We should not be allowed to add docs at an impossibly low level
         """
 
-        with pytest.raises(DocumentLevelException):
-            test_project_adoc.add_document(name="test", level=3)
+        with pytest.raises(ProjectFileExistsException):
+            test_project_adoc.add_document("Chapter One", "01")
+
+class TestProjectReordering:
+    """
+    Tests around project reordering
+    """
+    
+    def test_reorder_bad_list(self, test_project_adoc):
+        """
+        If the new list and the old list don't match, don't reorder
+        """
+        with pytest.raises(ReorderingException):
+            new_list = [d for d in test_project_adoc.documents]
+            new_list.append(Path("foo"))
+            test_project_adoc.reorder_project_documents(new_list)
+
+    def test_reorder_simple_case_level_1(self, test_project_adoc):
+        """
+        Tests that we can reorder a "simple" doc_levels 1 project
+        """
+
+        new_list = [d for d in test_project_adoc.documents[1:]]
+        random.shuffle(new_list)
+        new_list.insert(0, test_project_adoc.root)
+        test_project_adoc.reorder_project_documents(new_list)
+        for index, value in enumerate(new_list):
+            assert (
+                    test_project_adoc.documents[index].name[3:] ==
+                    value.name[3:]
+                   )
+            assert str(index) in test_project_adoc.documents[index].name[:3]
+
+

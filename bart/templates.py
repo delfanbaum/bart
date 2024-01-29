@@ -1,4 +1,5 @@
 from pathlib import Path
+from bart.config import MarkupLanguages
 
 from bart.exceptions import ProjectFileExistsException
 
@@ -17,14 +18,14 @@ def write_template(template, path: Path, **kwargs):
         f.write(text)
 
 
-def named_document_template(markup: str,
+def named_document_template(markup: MarkupLanguages,
                             document_name: str,
                             heading_level: int = 1):
 
     match markup:
-        case "asciidoc":
+        case MarkupLanguages.ASCIIDOC:
             return f"""{"=" * heading_level} {document_name}"""
-        case "markdown":
+        case MarkupLanguages.MARKDOWN:
             return f"""{"#" * heading_level} {document_name}"""
         case _:
             return f"{document_name}"

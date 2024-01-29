@@ -35,11 +35,13 @@
 ## To Do
 
 - Reorder (rename) documents in project
+- Combine documents permanently
+- Split documents
 
 ## In Progress 
 
-- Combine documents (required for building!)
 
 ## Done
 
 - Tests for existing code
+- Combine documents in memory(required for building!)

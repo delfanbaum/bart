@@ -1,11 +1,12 @@
 import pytest
+from bart.config import MarkupLanguages
 from bart.exceptions import ProjectFileExistsException
 from bart.templates import write_template, named_document_template
 
 
 @pytest.mark.parametrize("markup,heading_mark", [
-        ("asciidoc", "= "),
-        ("markdown", "# "),
+        (MarkupLanguages.ASCIIDOC, "= "),
+        (MarkupLanguages.MARKDOWN, "# "),
         ("text", "")
     ])
 def test_named_document_template(markup, heading_mark):
@@ -34,15 +35,17 @@ class TestWriteTemplate:
                            document_name="Test")
 
 
-    def test_write_named_document_template(self, tmp_path):
+    @pytest.mark.parametrize('level', range(6))
+    def test_write_named_document_template(self, tmp_path, level):
         """
         We write a named_document_template
         """
         test_doc = tmp_path / "test.adoc"
         write_template(named_document_template,
                        test_doc,
-                       markup="asciidoc",
-                       document_name="Test")
+                       markup=MarkupLanguages.ASCIIDOC,
+                       document_name="Test",
+                       heading_level=level)
 
         with test_doc.open('rt') as f:
-            assert f.read() == """= Test"""
+            assert f.read() == f"""{'=' * level} Test"""

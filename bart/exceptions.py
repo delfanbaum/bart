@@ -8,6 +8,9 @@ class MissingProjectRootException(Exception):
 class ProjectDirExistsException(Exception):
     pass
 
+class ReorderingException(Exception):
+    pass
+
 
 # document exceptions
 class ProjectFileExistsException(Exception):

@@ -1,3 +1,4 @@
+import pytest
 from bart.actions.joins import join_docs
 
 
@@ -40,3 +41,11 @@ class TestJoins:
         for ch in [ch1, ch2]:
             assert f"\n<!-- {ch.name} -->\n" in text
             assert f"\n<!-- end {ch.name} -->\n" in text
+
+    @pytest.mark.skip()
+    def test_join_writes_and_reorders():
+        """
+        Optionally, the join should be "permanent", reordering the docs in the
+        project and preserving the delimiters (if not delimiters, no perm join)
+        """
+        assert False
