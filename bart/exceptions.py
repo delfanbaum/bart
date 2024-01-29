@@ -15,3 +15,6 @@ class ProjectFileExistsException(Exception):
 
 class DocumentLevelException(Exception):
     pass
+
+class MarkupNotAllowedException(Exception):
+    pass

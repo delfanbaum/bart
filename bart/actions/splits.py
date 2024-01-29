@@ -1,47 +1,26 @@
-from enum import Enum
+from bart.exceptions import MarkupNotAllowedException
+from bart.config import MarkupLanguages
+from bart.utilites import get_valid_pathname
 from pathlib import Path
 
 
-class Markup(Enum):
-    TEXT = ".txt"
-    MARKDOWN = ".md"
-    ASCIIDOC = ".adoc"
-
-
-class MarkupNotAllowedException(Exception):
-    pass
+"""
+This all needs to be reworked given the project paradigm!
+"""
 
 
 def get_delimiter(file: Path):
     """
     TODO: allow users to config their own delimiters per filetype
     """
-    match file.suffix:
-        case Markup.MARKDOWN.value:
+    match file.suffix[1:]:  # remove the dot
+        case MarkupLanguages.MARKDOWN.value:
             return "#"
-        case Markup.ASCIIDOC.value:
+        case MarkupLanguages.ASCIIDOC.value:
             return "="
         case _:
             raise MarkupNotAllowedException(
                     "This operation is not available for this type of markup.")
-
-
-def get_numbering(file: Path):
-    """
-    TODO: handle two- three- four-digit numbering more elegantly
-    """
-    try:
-        return int(file.name.split('-')[0])
-    except ValueError:
-        return 0
-
-
-def get_valid_filename(name) -> str:
-    """
-    TODO: handle commas, colons, etc.
-    """
-    s = str(name).strip().replace(' ', '-')
-    return s.lower()
 
 
 def write_split(split_lines: list,
@@ -50,7 +29,7 @@ def write_split(split_lines: list,
                 suffix: str) -> int:
     section_title = split_lines[0].split(delimeter)[-1]
     text = "".join(split_lines)
-    out_fn = str(numbering) + "-" + get_valid_filename(section_title) + suffix
+    out_fn = str(numbering) + "-" + get_valid_pathname(section_title) + suffix
 
     with open(out_fn, 'wt') as f:
         print(f"Writing {out_fn}...")
@@ -62,7 +41,7 @@ def write_split(split_lines: list,
 def split_at_headings(fn):
     file = Path(fn)
     delimeter = get_delimiter(file)
-    numbering = get_numbering(file)
+    numbering = None  # todo
     current_split = []
 
     with file.open('rt') as f:

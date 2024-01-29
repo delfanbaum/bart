@@ -1,5 +1,5 @@
 from pathlib import Path
-from bart.config import BartConfig, MarkupLanguages
+from bart.config import BartConfig, DocConverers, MarkupLanguages
 import shutil
 import pytest
 
@@ -43,6 +43,26 @@ def test_project_adoc(tmp_path) -> BartProject:
     default_config.write_to(test_config)
 
     shutil.copytree('tests/projects/adoc',
+                    test_dir,
+                    dirs_exist_ok=True)
+    return BartProject(test_dir)
+
+@pytest.fixture()
+def test_project_md(tmp_path) -> BartProject:
+    """
+    Test project with various markdown files with a default config
+    (accounting for markup language)
+    """
+    test_dir = tmp_path / 'test'
+    test_dir.mkdir()
+
+    default_config = BartConfig(use_default=True)
+    default_config.markup = MarkupLanguages.MARKDOWN
+    default_config.default_converter = DocConverers.MARKDOWN2
+    test_config = test_dir / '.bart.toml'
+    default_config.write_to(test_config)
+
+    shutil.copytree('tests/projects/md',
                     test_dir,
                     dirs_exist_ok=True)
     return BartProject(test_dir)
