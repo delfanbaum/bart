@@ -1,11 +1,10 @@
 import pytest
-import random
 from pathlib import Path
 from bart.exceptions import (
+    DocumentLevelException,
     MissingProjectRootException,
     NotInProjectException,
     ProjectDirExistsException,
-    ProjectFileExistsException,
     ReorderingException
     )
 from bart.project import BartProject
@@ -68,10 +67,13 @@ class TestBartProject:
 
     def test_get_docs(self, test_project_adoc):
         """
-        The expected documents are in the test_project
+        The expected documents are in the test_project and are ordered as such
         """
 
-        assert len(test_project_adoc.documents) == 4
+        assert len(test_project_adoc.get_project_docs()) == 4
+        for i in range(0,4):
+            assert str(i) in test_project_adoc.get_project_docs()[i].name
+
 
     @pytest.mark.parametrize("level", range(2,6))
     def test_increase_level(self, test_project_adoc, level):
@@ -114,8 +116,8 @@ class TestProjectAdd:
         We should not be allowed to add docs at an impossibly low level
         """
 
-        with pytest.raises(ProjectFileExistsException):
-            test_project_adoc.add_document("Chapter One", "01")
+        with pytest.raises(DocumentLevelException):
+            test_project_adoc.add_document("Chapter One", level=100)
 
 class TestProjectReordering:
     """
@@ -135,16 +137,14 @@ class TestProjectReordering:
         """
         Tests that we can reorder a "simple" doc_levels 1 project
         """
+        # setup, reverse the list and replace the root
+        new_list = [d for d in test_project_adoc.documents[::-1]]
+        new_list.insert(0, new_list.pop(len(new_list) -1))
 
-        new_list = [d for d in test_project_adoc.documents[1:]]
-        random.shuffle(new_list)
-        new_list.insert(0, test_project_adoc.root)
-        test_project_adoc.reorder_project_documents(new_list)
-        for index, value in enumerate(new_list):
-            assert (
-                    test_project_adoc.documents[index].name[3:] ==
-                    value.name[3:]
-                   )
-            assert str(index) in test_project_adoc.documents[index].name[:3]
+        reordered_docs = test_project_adoc.reorder_project_documents(new_list)
 
-
+        for index, doc in enumerate(new_list):
+            # ensure that we've actually moved the correct file
+            assert reordered_docs[index].name[3:] == doc.name[3:]
+            # ensure that the index (0, 1, 2, 3) is in the new numbering
+            assert str(index) in reordered_docs[index].name[:3]

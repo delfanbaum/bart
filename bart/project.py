@@ -7,12 +7,11 @@ from bart.exceptions import (
     NotInProjectException,
     MissingProjectRootException,
     ProjectDirExistsException,
-    DocumentLevelException,
     ProjectFileExistsException,
     ReorderingException
 )
 from bart.templates import named_document_template, write_template
-from bart.utilites import get_next_doc_number, get_valid_pathname
+from bart.utilites import get_doc_number, get_valid_pathname
 
 
 class BartProject:
@@ -39,7 +38,7 @@ class BartProject:
         "Seeds" a new project with a 00- "root" file and title
         """
 
-        numbering = get_next_doc_number(None, self.config.doc_levels, 0)
+        numbering = get_doc_number(self.config.doc_levels)
 
         if self.project_dir.exists():
             raise ProjectDirExistsException
@@ -61,16 +60,16 @@ class BartProject:
         """
         Collects the project files for further operations
         """
-        project_files = (
+        self.documents = (
                 list(self.project_dir.glob(
                     f"[0-9]*.{self.config.markup.extension()}"))
                 )
 
-        if not project_files:
+        if not self.documents:
             raise NotInProjectException
 
-        project_files.sort()
-        return project_files
+        self.documents.sort()
+        return self.documents
     
 
     def increase_doc_levels(self, new_level):
@@ -90,14 +89,11 @@ class BartProject:
             shutil.move(doc, self.project_dir / new_fn)
 
 
-    def add_document(self, name: str, number: Optional[str] = None) -> Path:
+    def add_document(self, name: str, level: int = 1, number: Optional[str] = None) -> Path:
         """
         Adds a document at the "section" level (what config.doc_numbering) is set to
         """
         last_doc = self.get_project_docs()[-1]
-
-        # i.e., 1, 10, 100, etc.
-        add_position  = 10 ** (self.config.doc_levels - 1)
 
         if number:
             new_document = (self.project_dir /
@@ -107,9 +103,10 @@ class BartProject:
                 raise ProjectFileExistsException
 
         else:
-            next_number = get_next_doc_number(last_doc,
-                                              self.config.doc_levels,
-                                              add_position)
+            next_number = get_doc_number(self.config.doc_levels,
+                                         last_doc,
+                                         level)
+
             new_document = (self.project_dir /
                             (f"{next_number}-{get_valid_pathname(name)}" +
                              f".{self.config.markup.extension()}"))
@@ -122,7 +119,7 @@ class BartProject:
                        )
         return new_document
     
-    def reorder_project_documents(self, new_order: list[Path]):
+    def reorder_project_documents(self, new_order: list[Path]) -> list[Path]:
         """
         Reorders (re-prefixes) documents in the project, with a very small
         safeguard that it requires that the members of the new ordering be equal
@@ -135,4 +132,18 @@ class BartProject:
             ):
             raise ReorderingException
 
-        # TODO: reset of function
+        # the first "reordered" doc is still the root
+        new_fpath = self.root
+
+        for doc in new_order:
+            if doc == self.root:  # skip the root
+                continue
+
+            new_numbering = get_doc_number(self.config.doc_levels,
+                                           new_fpath)  # the last reordered doc
+
+            new_fpath = self.project_dir / (new_numbering + "-" +
+                                            "-".join(doc.name.split('-')[1:]))
+            doc.rename(new_fpath)
+
+        return self.get_project_docs()
