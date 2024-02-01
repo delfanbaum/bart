@@ -1,10 +1,10 @@
 from pathlib import Path
 
-
-def join_docs(docs: list[Path], delimit: bool = False):
+def join_docs(docs: list[Path],
+              delimit: bool = False) -> str:
     """
     Joins the text of documents and returns it, adding newlines in between
-    the text of each file.
+    the text of each file and returns the text.
     
     If `delimit` is passed as true, then the resultant text includes
     commented delimiters noting the source of a given chunk of text
@@ -33,4 +33,4 @@ def join_docs(docs: list[Path], delimit: bool = False):
 
             text += doc_text
     
-    return  text
+    return text

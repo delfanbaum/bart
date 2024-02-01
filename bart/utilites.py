@@ -1,8 +1,9 @@
+import io
 import re
 from pathlib import Path
-from typing import Optional
-
-from bart.exceptions import DocumentLevelException
+from typing import Optional, Union
+from bart.config import DocConverers
+from bart.exceptions import DocumentLevelException, DocConverterException
 
 
 def get_valid_pathname(name) -> str:
@@ -38,6 +39,7 @@ def get_doc_number(project_levels: int,
     else:
         return next_number.zfill(project_levels)
 
+
 def get_doc_position(project_levels, doc: Path) -> int:
     """
     Gets the "position" of the document, i.e., is it a main doc? Is it a
@@ -57,3 +59,21 @@ def get_doc_position(project_levels, doc: Path) -> int:
             return project_levels - index
     # if we can't find anything at all, no numbering, etc.
     raise DocumentLevelException
+
+
+def markup_to_html(text, converter:DocConverers, out_fn: Union[str, Path]):
+    """
+    Given a markup string, converts the markup to HTML for further processing
+    """
+
+    match converter:
+        case DocConverers.ASCIIDOC:
+            pass
+        case DocConverers.ASCIIDOCTOR:
+            pass
+        case DocConverers.MARKDOWN2:
+            pass
+        case DocConverers.PANDOC:
+            pass
+        case _:
+            raise DocConverterException

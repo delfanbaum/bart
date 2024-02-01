@@ -21,3 +21,7 @@ class DocumentLevelException(Exception):
 
 class MarkupNotAllowedException(Exception):
     pass
+
+# build/conversion exceptions
+class DocConverterException(Exception):
+    pass

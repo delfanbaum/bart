@@ -94,7 +94,7 @@ class BartConfig:
 
                     case "default_converter" if v.upper() in [b.name for b in
                                                   DocConverers]:
-                        self.default_build = DocConverers[v.upper()]
+                        self.default_converter = DocConverers[v.upper()]
 
                     case "default_build" if v.upper() in [b.name for b in
                                                   BuildFormats]:

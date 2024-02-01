@@ -2,7 +2,7 @@
 
 - See Outline (to text file, also gui)
 - Generate docs from outline
-- "Cards" or Corkboard
+- "Cards" or Corkboard (or do we just make a really good outline view?)
 - External Resources (character profiles, settings, etc.)
 - Associate CSS/styles with project (or global)
 
@@ -12,11 +12,7 @@
 
 ## Work Backlog
 
-- Split/combine operations update file naming for project
-- Reorder docs (and update filenames accordling)
 - Handle sub-documents (i.e., 11- case)
-- Build an asciidoc doc
-- Build a md doc
 - Build a text doc (how to convert?)
 - Project word count tracking
 - "Due dates" feature
@@ -24,7 +20,7 @@
 - Progress view feature (word count vs goal vs deadline, etc)
 - Outline data structure
 - Outline GUI
-- Default edtior option
+- Default editor option
 - Open doc in editor from outline/GUI
 - Optional git hooks for word counts/goals
 - Build a single doc or selection of docs
@@ -34,14 +30,16 @@
 
 ## To Do
 
-- Reorder (rename) documents in project
-- Combine documents permanently
 - Split documents
+- Build an asciidoc doc
+- Build a md doc
 
 ## In Progress 
 
 
 ## Done
 
+- Combine documents permanently
+- Reorder (rename) documents in project
 - Tests for existing code
 - Combine documents in memory(required for building!)

@@ -1,8 +1,9 @@
 from pathlib import Path
 import shutil
 from typing import Optional
+from bart.actions.joins import join_docs
 
-from bart.config import BartConfig
+from bart.config import BartConfig, BuildFormats
 from bart.exceptions import (
     NotInProjectException,
     MissingProjectRootException,
@@ -72,6 +73,12 @@ class BartProject:
         return self.documents
     
 
+    def get_project_text(self) -> str:
+        """
+        Joins the whole project, returning its text
+        """
+        return join_docs(self.documents)
+
     def increase_doc_levels(self, new_level):
         """
         Increases the doc levels for the project and renames the docs
@@ -119,6 +126,32 @@ class BartProject:
                        )
         return new_document
     
+    def join_documents(self,
+                       docs: list[Path],
+                       delmit: bool = False,
+                       write: bool = False):
+        """
+        Joins the text of documents and returns it, adding newlines in between
+        the text of each file.
+        
+        If `delimit` is passed as true, then the resultant text includes
+        commented delimiters noting the source of a given chunk of text
+
+        If `write` is true, the documents will be combined into the "first" (in
+        terms of order) 
+        """
+        text = join_docs(docs, delmit)
+        if write:
+            with docs[0].open('wt') as f:
+                f.write(text)  # write to the "new" document
+            for d in docs[1:]:  # remove the rest of the docs
+                d.unlink()
+
+            # run the reorder to get the numbering correct
+            self.get_project_docs()  # refresh list
+            self.reorder_project_documents(self.documents)
+
+
     def reorder_project_documents(self, new_order: list[Path]) -> list[Path]:
         """
         Reorders (re-prefixes) documents in the project, with a very small
@@ -147,3 +180,13 @@ class BartProject:
             doc.rename(new_fpath)
 
         return self.get_project_docs()
+
+    def build(self, target: BuildFormats = BuildFormats.HTML):
+        if not target and self.config.default_build:
+            target = self.config.default_build
+
+        text = self.get_project_text()
+        
+        html = text_to_html(text, self.config.default_converter, "build.html")
+
+

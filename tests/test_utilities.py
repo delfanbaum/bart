@@ -1,10 +1,12 @@
 import pytest
 from pathlib import Path
+from bart.config import DocConverers
 
 from bart.utilites import (
     get_doc_number,
     get_doc_position,
-    get_valid_pathname
+    get_valid_pathname,
+    markup_to_html
 )
 
 
@@ -96,4 +98,21 @@ class TestGetDocLevel:
         """
         doc = Path(f"{number}-example.md")
         assert get_doc_position(level, doc) == expected
+
+
+class TestMarkupToHtml:
+    """
+    Tests around converting text strings with various markups into HTML with
+    various converters
+    """
+
+    def test_asciidoc(self, tmp_path):
+        out_fn = tmp_path / 'build.html'
+        text = """= An Example File
+
+Some _content_.
+"""
+        markup_to_html(text, DocConverers.ASCIIDOC, out_fn)
+        with out_fn.open('rt') as f:
+            assert f.read() == """"""
 
