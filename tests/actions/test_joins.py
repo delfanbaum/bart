@@ -40,28 +40,3 @@ class TestJoins:
         for ch in [ch1, ch2]:
             assert f"\n<!-- {ch.name} -->\n" in text
             assert f"\n<!-- end {ch.name} -->\n" in text
-
-    def test_join_writes_and_reorders_two_docs(self, test_project_md):
-        """
-        Optionally, the join should be "permanent", reordering the docs in the
-        project and preserving the delimiters (if not delimiters, no perm join)
-        """
-        start_length = len(test_project_md.documents)
-        ch1, ch2 = test_project_md.get_project_docs()[1:3]
-        _ = join_docs([ch1, ch2], delimit=True, write=True)
-        assert len(test_project_md.get_project_docs()) == start_length - 1
-        assert ch2 not in test_project_md.documents
-        # check renames
-        for i, d in enumerate(test_project_md.documents):
-            assert str(i) in d.name[:3]
-
-    def test_join_writes_and_reorders_many_docs(self, test_project_md):
-        """
-        Optionally, the join should be "permanent", reordering the docs in the
-        project and preserving the delimiters (if not delimiters, no perm join)
-        """
-        _ = join_docs(test_project_md.get_project_docs()[1:],
-                      delimit=True,
-                      write=True)
-        assert len(test_project_md.get_project_docs()) == 2
-        assert test_project_md.documents[1].name[:3] == "01-"

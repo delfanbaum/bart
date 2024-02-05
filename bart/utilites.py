@@ -59,21 +59,3 @@ def get_doc_position(project_levels, doc: Path) -> int:
             return project_levels - index
     # if we can't find anything at all, no numbering, etc.
     raise DocumentLevelException
-
-
-def markup_to_html(text, converter:DocConverers, out_fn: Union[str, Path]):
-    """
-    Given a markup string, converts the markup to HTML for further processing
-    """
-
-    match converter:
-        case DocConverers.ASCIIDOC:
-            pass
-        case DocConverers.ASCIIDOCTOR:
-            pass
-        case DocConverers.MARKDOWN2:
-            pass
-        case DocConverers.PANDOC:
-            pass
-        case _:
-            raise DocConverterException
