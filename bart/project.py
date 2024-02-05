@@ -1,9 +1,10 @@
 from pathlib import Path
 import shutil
 from typing import Optional
-from bart.actions.joins import join_docs
 
+from bart.actions.joins import join_docs
 from bart.config import BartConfig, BuildFormats
+from bart.converters.api import text_to_html
 from bart.exceptions import (
     NotInProjectException,
     MissingProjectRootException,
@@ -29,6 +30,8 @@ class BartProject:
 
         self.documents = self.get_project_docs()
         self.root = self.documents[0]
+        # infer from project root path stem (name w/o suffix)
+        self.name = "-".join(self.root.stem.split("-")[1:]).split('.')
 
         if not int(self.root.name.split('-')[0]) == 0:
             raise MissingProjectRootException
@@ -181,12 +184,29 @@ class BartProject:
 
         return self.get_project_docs()
 
-    def build(self, target: BuildFormats = BuildFormats.HTML):
+    def build(self,
+              target: BuildFormats = BuildFormats.HTML,
+              file: Optional[Path] = None):
+        """
+        Builds the project (or optionally a single file) to a target build
+        format (default is HTML)
+        """
         if not target and self.config.default_build:
             target = self.config.default_build
 
-        text = self.get_project_text()
+        if file:
+            with file.open('rt') as f:
+                text = f.read()
+            target_path = self.project_dir / file.name.replace(
+                        file.suffix,
+                        f".{target.name.lower().split('_')[0]}")
+        else:
+            text = self.get_project_text()
+            target_path = (self.project_dir /
+                        f"{self.name}.{target.name.lower().split('_')[0]}")
         
-        html = text_to_html(text, self.config.default_converter, "build.html")
+        html = text_to_html(text, self.config.default_converter)
 
-
+        if target == BuildFormats.HTML:
+            with target_path.open('wt') as f:
+                f.write(html)

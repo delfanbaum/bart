@@ -48,7 +48,6 @@ class BuildFormats(Enum):
     DOCX = "pandoc"
 
 
-
 class BartConfig:
     """
     Project and global config, with defaults

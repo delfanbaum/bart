@@ -1,12 +1,14 @@
 import subprocess
+import sys
+
+from bart.config import DocConverers
+from bart.exceptions import DocConverterException
 
 
-def process_with_asciidoctor(text):
+def process_with_asciidoctor(text) -> str:
     """
     Converts asciidoc to html via asciidoctor (ruby)
     """
-    with open('tmp.adoc', 'wt') as f:
-        f.write_through
     result = subprocess.run(['asciidoctor', '-a', "stylesheet!",
                              "-o", "-", "-"],
                             input=text,
@@ -17,14 +19,13 @@ def process_with_asciidoctor(text):
         return result.stdout
 
     else:
-        print(f'\nError in Asciidoctor conversion: {result.stderr}')
-        print("Exiting...")
-        exit()
+        sys.exit(f'\nError in Asciidoctor conversion: {result.stderr}')
 
 
-def process_with_python_asciidoc(fn):
+def process_with_python_asciidoc(text) -> str:
     result = subprocess.run(['asciidoc', '-b', 'html5', '-a', 'linkcss',
-                             '-a', 'disable-javascript', "-o", "-", fn],
+                             '-a', 'disable-javascript', "-o", "-", "-"],
+                            input=text,
                             capture_output=True,
                             text=True)
     if result.returncode == 0:
@@ -36,6 +37,18 @@ def process_with_python_asciidoc(fn):
         return html
 
     else:
-        print()
-        print(f'Error code {result.returncode}: {result.stderr}')
-        exit()
+        sys.exit(f'Error code {result.returncode}: {result.stderr}')
+
+
+def adoc_to_html(text, converter: DocConverers) -> str:
+    """
+    Takes an adoc file and converts it; this function is more a helper/makes all
+    the converter code look similar
+    """
+    match converter:
+        case DocConverers.ASCIIDOC:
+            return process_with_python_asciidoc(text)
+        case DocConverers.ASCIIDOCTOR:
+            return process_with_asciidoctor(text)
+        case _:
+            raise DocConverterException
