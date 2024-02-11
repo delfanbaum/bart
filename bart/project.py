@@ -1,11 +1,13 @@
 from pathlib import Path
 import shutil
 from typing import Optional
+from bart.actions.build import html_to_pdf_weasyprint
 
 from bart.actions.joins import join_docs
 from bart.config import BartConfig, BuildFormats
 from bart.converters.api import text_to_html
 from bart.exceptions import (
+    BuildTargetException,
     NotInProjectException,
     MissingProjectRootException,
     ProjectDirExistsException,
@@ -207,6 +209,20 @@ class BartProject:
         
         html = text_to_html(text, self.config.default_converter)
 
-        if target == BuildFormats.HTML:
-            with target_path.open('wt') as f:
-                f.write(html)
+        match target:
+            case BuildFormats.HTML:
+                with target_path.open('wt') as f:
+                    f.write(html)
+            case BuildFormats.PDF_WP:
+                out_path = html_to_pdf_weasyprint(
+                        html=html,
+                        target_path=target_path,
+                        css_path=self.config.css_path
+                        )
+                print(out_path)
+            case BuildFormats.PDF_PJS:
+                pass
+            case BuildFormats.DOC | BuildFormats.DOCX:
+                pass
+            case _:
+                raise BuildTargetException

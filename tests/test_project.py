@@ -40,6 +40,7 @@ class TestBartProject:
         project name and that a "project root" is created
         """
         new_project = BartProject((tmp_path / "test"), new=True, project_name="Test")
+        assert (tmp_path / "test").exists()
         assert new_project
         assert "00-test.adoc" in [p.name for p in new_project.documents]
         assert new_project.root.name == "00-test.adoc"
@@ -67,12 +68,23 @@ class TestBartProject:
 
     def test_get_docs(self, test_project_adoc):
         """
-        The expected documents are in the test_project and are ordered as such
+        The expected documents are in the test_project and are ordered as such,
+        and that the documents attribute of the project has been updated
         """
 
         assert len(test_project_adoc.get_project_docs()) == 4
+        assert len(test_project_adoc.documents) == \
+            len(test_project_adoc.get_project_docs())
         for i in range(0,4):
             assert str(i) in test_project_adoc.get_project_docs()[i].name
+
+    def test_get_project_text(self, test_project_adoc):
+        """
+        Assert that we can get all the docs in the project. Note that the
+        functional tests for this are on the join_docs() function
+        """
+        result = test_project_adoc.get_project_text()
+        assert result
 
 
     @pytest.mark.parametrize("level", range(2,6))

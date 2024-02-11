@@ -25,3 +25,6 @@ class MarkupNotAllowedException(Exception):
 # build/conversion exceptions
 class DocConverterException(Exception):
     pass
+
+class BuildTargetException(Exception):
+    pass

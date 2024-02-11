@@ -6,11 +6,13 @@ import typer
 
 PROJECT_CONFIG_PATH = Path.cwd() / '.bart.toml'
 
-# possible config locations, ordered in terms of priority
+# config locations ordered in terms of priority
 BART_CONFIG_PATHS = [
     Path.home() / ".config/bart/bart.toml",
     Path(typer.get_app_dir("bart")),
 ]
+
+BART_TEMPLATES_DIR = Path(__file__) / "templates"
 
 
 class MarkupLanguages(Enum):
@@ -60,10 +62,11 @@ class BartConfig:
         """
 
         # defaults
-        self.markup = MarkupLanguages.ASCIIDOC
-        self.default_converter = DocConverers.ASCIIDOC
-        self.default_build = BuildFormats.HTML
-        self.doc_levels = 1  # how many "deep" the tree goes 1-indexed
+        self.markup: MarkupLanguages = MarkupLanguages.ASCIIDOC
+        self.default_converter: DocConverers = DocConverers.ASCIIDOC
+        self.default_build: BuildFormats = BuildFormats.HTML
+        self.css_path: Path = BART_TEMPLATES_DIR / "mansucript.css"
+        self.doc_levels: int = 1  # how many "deep" the tree goes 1-indexed
 
         if not use_default:
             # user config
@@ -101,6 +104,11 @@ class BartConfig:
 
                     case "doc_levels" if (isinstance(v, int) and v > 0):
                         self.doc_levels = v
+
+                    case "css_path" if isinstance(v, str):
+                        css_path = Path(v)
+                        if css_path.is_file():
+                            self.css_path = css_path
                 
 
     def write_to(self, destination: Path):
