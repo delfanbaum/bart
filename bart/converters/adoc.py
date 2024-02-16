@@ -1,8 +1,8 @@
 import subprocess
 import sys
+from typing import Literal
 
 from bart.config import DocConverers
-from bart.exceptions import DocConverterException
 
 
 def process_with_asciidoctor(text) -> str:
@@ -40,7 +40,8 @@ def process_with_python_asciidoc(text) -> str:
         sys.exit(f'Error code {result.returncode}: {result.stderr}')
 
 
-def adoc_to_html(text, converter: DocConverers) -> str:
+def adoc_to_html(text, converter: Literal[DocConverers.ASCIIDOC,
+                                          DocConverers.ASCIIDOCTOR]) -> str:
     """
     Takes an adoc file and converts it; this function is more a helper/makes all
     the converter code look similar
@@ -50,5 +51,3 @@ def adoc_to_html(text, converter: DocConverers) -> str:
             return process_with_python_asciidoc(text)
         case DocConverers.ASCIIDOCTOR:
             return process_with_asciidoctor(text)
-        case _:
-            raise DocConverterException

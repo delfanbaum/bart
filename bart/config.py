@@ -98,15 +98,16 @@ class BartConfig:
                                                   DocConverers]:
                         self.default_converter = DocConverers[v.upper()]
 
-                    case "default_build" if v.upper() in [b.name for b in
+                    case "default_build" if v in [b.value for b in
                                                   BuildFormats]:
-                        self.default_build = BuildFormats[v.upper()]
+                        self.default_build = BuildFormats(v)
 
                     case "doc_levels" if (isinstance(v, int) and v > 0):
                         self.doc_levels = v
 
                     case "css_path" if isinstance(v, str):
-                        css_path = Path(v)
+                        # path relative to the config file mentioning it
+                        css_path = config.parent / v
                         if css_path.is_file():
                             self.css_path = css_path
                 
@@ -121,6 +122,12 @@ class BartConfig:
         for k, v in vars(self).items():
             if isinstance(v, Enum):
                 config_values.add(k, v.name.lower())
+            elif isinstance(v, Path):
+                try:  # if it's possible to do the rel path, do that
+                    config_values.add(k, str(v.relative_to(destination)))
+                except ValueError:  # otherwise abs path is good
+                    config_values.add(k, str(v))
+
             else:
                 config_values.add(k, v)
 

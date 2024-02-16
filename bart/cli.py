@@ -61,3 +61,10 @@ def config():
     print("\nBart configuration:")
     for k, v in vars(config).items():
         print(f"  {k}: {v}")
+
+@app.command()
+def seed_config():
+    """ placeholder for me for testing """
+    config = BartConfig()
+    config.write_to(Path.cwd() / "bart.toml")
+

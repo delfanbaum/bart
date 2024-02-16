@@ -226,3 +226,11 @@ class BartProject:
                 pass
             case _:
                 raise BuildTargetException
+
+    # testing methods
+    def _update_config(self):
+        """
+        Updates the configuration if changed while the project is still in
+        memory (for testing)
+        """
+        self.config = BartConfig(self.project_dir)

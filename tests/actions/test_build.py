@@ -24,4 +24,3 @@ class TestPdfWeasyprint:
                 css_path=css
                 )
         assert result
-        breakpoint()

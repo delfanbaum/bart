@@ -1,3 +1,4 @@
+from bart.exceptions import DocumentLevelException
 import pytest
 from pathlib import Path
 
@@ -96,3 +97,11 @@ class TestGetDocLevel:
         """
         doc = Path(f"{number}-example.md")
         assert get_doc_position(level, doc) == expected
+
+    def test_exception(self, tmp_path):
+        """
+        Test we get our exception
+        """
+        bad_path = tmp_path / "00000-something.adoc"
+        with pytest.raises(DocumentLevelException):
+            _ = get_doc_position(2, bad_path)
