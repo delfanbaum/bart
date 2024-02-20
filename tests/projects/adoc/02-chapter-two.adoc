@@ -1,1 +1,2 @@
 = Chapter Two
+:description: A description for chapter two.

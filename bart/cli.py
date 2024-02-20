@@ -1,6 +1,7 @@
 from pathlib import Path
 from bart.config import BartConfig
 from bart.exceptions import ProjectDirExistsException, ProjectFileExistsException
+from bart.markup.asciidoc_or import read_attributes
 from bart.project import BartProject
 import typer
 
@@ -48,6 +49,17 @@ def add(document_name: str,
         # this really shouldn't happen, but theoretically possible
         print("Ugh oh! A file already exists with that name. " +
               "How'd you manage that?!") 
+
+
+@app.command()
+def show_descriptions():
+    """
+    Lists the file with its description attribute per file in the project
+    """
+    project = BartProject(Path.cwd())
+    for file in project.documents:
+        description = read_attributes(file).get('description', None)
+        print(f"{file.relative_to(project.project_dir)}:\n    {description}\n")
 
 
 @app.command()
