@@ -68,3 +68,13 @@ def html_to_pandoc_target(html: str,
 
 Error code {result.returncode}: {result.stderr}')
 """)
+
+def html_to_docx(html: str):
+    """
+    Test
+    """
+    # html2docx() returns an io.BytesIO() object. The HTML must be valid.
+    buf = html2docx(html, title="My Document")
+
+    with open("my.docx", "wb") as fp:
+        fp.write(buf.getvalue())
