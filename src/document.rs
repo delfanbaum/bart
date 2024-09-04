@@ -4,8 +4,7 @@ use serde::{Serialize, Deserialize};
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Document {
-    markup: SupportedMarkup,
-    path: PathBuf
+    pub path: PathBuf
 }
 
 #[derive(Debug, Serialize, Deserialize)]
