@@ -3,10 +3,7 @@ use std::{fs, path::Path};
 
 use clap::ValueEnum;
 
-use crate::{
-    document::{Document, SupportedMarkup},
-    project::BartProject,
-};
+use crate::{document::SupportedMarkup, project::BartProject};
 
 #[derive(Debug, ValueEnum, Clone, Copy, PartialEq, Eq)]
 pub enum BuildTargets {
@@ -26,18 +23,13 @@ impl fmt::Display for BuildTargets {
 }
 
 pub struct Builder {
-    project: Option<BartProject>,
-    docs: Vec<Document>,
-    target: BuildTargets,
+    pub project: BartProject,
+    pub target: BuildTargets,
 }
 
 impl Builder {
     pub fn build(&self) {
-        let out_file_name = match &self.project {
-            Some(project) => project.name.clone(),
-            None => self.docs[0].path.to_str().unwrap().to_owned(),
-        };
-
+        let out_file_name = &self.project.name.clone();
         let html = self.to_html();
         match &self.target {
             BuildTargets::Html => {
@@ -53,7 +45,7 @@ impl Builder {
     /// All formats at least pitstop in HTML
     fn to_html(&self) -> Vec<String> {
         let mut html_strings = Vec::new();
-        for doc in self.docs.iter() {
+        for doc in self.project.documents.iter() {
             let html = match doc.get_markup_language() {
                 SupportedMarkup::Markdown => markdown::to_html(&doc.read()),
                 SupportedMarkup::Text => text_to_html(&doc.read()),

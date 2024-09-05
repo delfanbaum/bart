@@ -5,7 +5,17 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Document {
-    pub path: PathBuf, // TK: description, other things
+    pub path: PathBuf,
+    pub description: String,
+}
+
+impl Default for Document {
+    fn default() -> Self {
+        Document {
+            path: PathBuf::new(),
+            description: String::new(),
+        }
+    }
 }
 
 impl Document {
@@ -18,7 +28,6 @@ impl Document {
     }
 
     pub fn read(&self) -> String {
-        
         fs::read_to_string(&self.path).expect("Error reading file {self.path}")
     }
 }
