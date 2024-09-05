@@ -64,11 +64,29 @@ impl Builder {
     }
 }
 
-// this needs testing!
+// A very "dumb" implementation, but really folks should use a markup language anyway.
 fn text_to_html(value: &str) -> String {
     println!("{}", value);
     let paras: Vec<_> = value.split("\n\n").collect();
-    let html: String = paras.into_iter().map(|p| format!("<p>{p}</p>")).collect();
+    let html: String = paras
+        .into_iter()
+        .fold(String::new(), |acc, p| acc + &format!("<p>{p}</p>"));
     println!("{}", html);
     html
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn text_to_html_makes_ps() {
+        let text = "This should be one paragraph
+
+This, another.";
+        assert_eq!(
+            text_to_html(text),
+            "<p>This should be one paragraph</p><p>This, another.</p>"
+        )
+    }
 }
