@@ -22,3 +22,4 @@ Cargo.lock
 
 # legacy files to keep around until the tests are all rewritten
 /python
+test_project/

@@ -9,8 +9,8 @@ use clap::Parser;
 fn main() {
     let args = Cli::parse();
     match args.command {
-        Commands::Init { directory } => {
-            BartProject::init(directory);
+        Commands::Init { name, byline, directory } => {
+            BartProject::init(name, byline, directory)
         }
         Commands::Add { file } => {
             let mut project = BartProject::read_in_project();
@@ -22,14 +22,7 @@ fn main() {
         }
         Commands::Build { format, file } => {
             let project = match file {
-                Some(file) => BartProject {
-                    name: file.clone(),
-                    documents: vec![Document {
-                        path: [file].iter().collect(),
-                        ..Default::default()
-                    }],
-                    ..Default::default()
-                },
+                Some(file) => BartProject::from_file(file),
                 None => BartProject::read_in_project(),
             };
             let builder = Builder {

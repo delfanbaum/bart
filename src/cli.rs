@@ -15,7 +15,14 @@ pub struct Cli {
 pub enum Commands {
     // Project-level
     /// Initializes a new bart project
-    Init { directory: Option<String> },
+    Init {
+        #[arg(short, long)]
+        name: Option<String>,
+        #[arg(short, long)]
+        byline: Option<String>,
+        #[arg(short, long)]
+        directory: Option<String>,
+    },
 
     /// Adds a file to the end of the project, creating it if necessary
     Add { file: String },
@@ -33,7 +40,7 @@ pub enum Commands {
         #[arg(short, long, default_value_t=BuildTargets::Html)]
         format: BuildTargets,
 
-        #[arg(short, long)]
+        #[arg(long)]
         /// Optionally, build a single file
         file: Option<String>,
     },

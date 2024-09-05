@@ -29,7 +29,7 @@ pub struct Builder {
 
 impl Builder {
     pub fn build(&self) {
-        let out_file_name = &self.project.name.clone();
+        let out_file_name = &self.project.name.clone().replace(" ", "-");
         let html = self.to_html();
         match &self.target {
             BuildTargets::Html => {

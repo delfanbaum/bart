@@ -25,8 +25,8 @@ impl Default for BartProject {
 }
 
 impl BartProject {
-    pub fn init(dir: Option<String>) {
-        let project_dir = match dir {
+    pub fn init(name: Option<String>, byline: Option<String>, directory: Option<String>) {
+        let project_dir = match directory {
             Some(dir) => {
                 let mut current = current_dir().unwrap();
                 current.push(Path::new(&dir));
@@ -36,12 +36,15 @@ impl BartProject {
             None => current_dir().unwrap(),
         };
         let project = BartProject {
-            name: project_dir // There must be a simpler way to do this
-                .file_name()
-                .unwrap()
-                .to_str()
-                .unwrap()
-                .to_string(),
+            name: name.unwrap_or(
+                project_dir // There must be a simpler way to do this
+                    .file_name()
+                    .unwrap()
+                    .to_str()
+                    .unwrap()
+                    .to_string(),
+            ),
+            byline: byline.unwrap_or("".to_string()),
             ..Default::default()
         };
 
@@ -55,10 +58,28 @@ impl BartProject {
         project
     }
 
+    /// Creates a project from a file, usually for the purposes of building a file (where we may
+    /// not always need/want to have a project associated, e.g., a short story in a single markdown
+    /// file).
+    ///
+    /// TODO: pull in any config from the project TOML if present, e.g., custom styling
+    pub fn from_file(file: String) -> BartProject {
+        let fp: PathBuf = [file].iter().collect();
+        assert!(fp.is_file());
+        BartProject {
+            name: fp.file_name().unwrap().to_str().unwrap().to_string(),
+            documents: vec![Document {
+                path: fp,
+                ..Default::default()
+            }],
+            ..Default::default()
+        }
+    }
+
     pub fn add_document(&mut self, doc: Document) {
         if !doc.path.is_file() {
             let mut f = fs::File::create(&doc.path).expect("Unable to create {doc}.");
-            f.write_all("{doc}".as_bytes())
+            f.write_all("".as_bytes())
                 .expect("Unable to write to {doc}.");
         }
         self.documents.push(doc);
