@@ -1,5 +1,5 @@
 use core::fmt;
-use std::{fmt::format, fs, path::Path};
+use std::{fs, path::Path};
 
 use clap::ValueEnum;
 

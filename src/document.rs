@@ -18,8 +18,8 @@ impl Document {
     }
 
     pub fn read(&self) -> String {
-        let contents = fs::read_to_string(&self.path).expect("Error reading file {self.path}");
-        contents
+        
+        fs::read_to_string(&self.path).expect("Error reading file {self.path}")
     }
 }
 
