@@ -1,4 +1,4 @@
-use crate::document::Document;
+use crate::document::{Document, SupportedMarkup};
 use serde::{Deserialize, Serialize};
 use std::{
     env::current_dir,
@@ -12,6 +12,7 @@ pub struct BartProject {
     pub name: String,
     pub byline: String,
     pub documents: Vec<Document>,
+    pub markup_language: SupportedMarkup
 }
 
 impl Default for BartProject {
@@ -20,6 +21,7 @@ impl Default for BartProject {
             name: "A New Project".to_string(),
             byline: "YOUR NAME".to_string(),
             documents: Vec::new(),
+            markup_language: SupportedMarkup::Markdown
         }
     }
 }
@@ -95,7 +97,7 @@ impl BartProject {
 
     fn save_with_create(self, mut project_dir: PathBuf) {
         let project_toml = toml::to_string(&self).unwrap();
-        project_dir.push("bart");
+        project_dir.push(".bart");
         project_dir.set_extension("toml");
         fs::write(project_dir, project_toml)
             .expect("Unable to write configuration to {project_dir}");
@@ -105,7 +107,7 @@ impl BartProject {
 // Assumes you're in the project directory
 fn get_project_toml() -> PathBuf {
     let mut project_toml = current_dir().unwrap();
-    project_toml.push("bart");
+    project_toml.push(".bart");
     project_toml.set_extension("toml");
     project_toml
 }
