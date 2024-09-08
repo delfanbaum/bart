@@ -9,10 +9,12 @@ use clap::Parser;
 fn main() {
     let args = Cli::parse();
     match args.command {
-        Commands::Init { name, byline, directory } => {
-            BartProject::init(name, byline, directory)
-        }
-        Commands::Add { file } => {
+        Commands::Init {
+            name,
+            byline,
+            directory,
+        } => BartProject::init(name, byline, directory),
+        Commands::Add { file, position: _ } => {
             let mut project = BartProject::read_in_project();
             let doc = Document {
                 path: [file].iter().collect(),
@@ -32,7 +34,7 @@ fn main() {
             builder.build()
         }
         _ => {
-            println!("{:?}", args)
+            println!("{:?} has not yet been implemented", args.command)
         }
     }
 }

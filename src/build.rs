@@ -3,7 +3,10 @@ use std::{fs, path::Path};
 
 use clap::ValueEnum;
 
-use crate::{document::SupportedMarkup, project::BartProject};
+use crate::{
+    document::{text_to_html, SupportedMarkup},
+    project::BartProject,
+};
 
 #[derive(Debug, ValueEnum, Clone, Copy, PartialEq, Eq)]
 pub enum BuildTargets {
@@ -49,36 +52,10 @@ impl Builder {
             let html = match doc.get_markup_language() {
                 SupportedMarkup::Markdown => markdown::to_html(&doc.read()),
                 SupportedMarkup::Text => text_to_html(&doc.read()),
+                _ => panic!("Not implemented."),
             };
             html_strings.push(html)
         }
         html_strings
-    }
-}
-
-// A very "dumb" implementation, but really folks should use a markup language anyway.
-fn text_to_html(value: &str) -> String {
-    println!("{}", value);
-    let paras: Vec<_> = value.split("\n\n").collect();
-    let html: String = paras
-        .into_iter()
-        .fold(String::new(), |acc, p| acc + &format!("<p>{p}</p>"));
-    println!("{}", html);
-    html
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn text_to_html_makes_ps() {
-        let text = "This should be one paragraph
-
-This, another.";
-        assert_eq!(
-            text_to_html(text),
-            "<p>This should be one paragraph</p><p>This, another.</p>"
-        )
     }
 }
