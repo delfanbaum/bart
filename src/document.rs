@@ -1,16 +1,8 @@
 use core::panic;
 use std::{fs, path::PathBuf};
 
-use regex::Regex;
-use scraper::{Html, Selector};
+use crate::{build, project::SupportedMarkup};
 use serde::{Deserialize, Serialize};
-
-#[derive(Debug, Serialize, Deserialize)]
-pub enum SupportedMarkup {
-    Asciidoc,
-    Markdown,
-    Text,
-}
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Document {
@@ -43,70 +35,12 @@ impl Document {
         fs::read_to_string(&self.path).expect("Error reading file {self.path}")
     }
 
-    pub fn to_html(&self) -> String {
-        match self.get_markup_language() {
-            SupportedMarkup::Asciidoc => panic!("Not implemented yet!"),
-            SupportedMarkup::Markdown => markdown::to_html(&self.read()),
-            SupportedMarkup::Text => text_to_html(&self.read()),
-        }
-    }
-
     /// Counts the number of words (in the body <p> text), updates self, and returns for
     /// consumption elsewhere.
-    pub fn count(&mut self) -> usize {
-        let re = Regex::new(r"(\w+)").unwrap();
-        let html = Html::parse_fragment(&self.to_html());
-        let selector = Selector::parse("p").unwrap();
-        let mut count = 0;
-        for e in html.select(&selector) {
-            let text = e.text();
-            count += text.fold(0, |tcount, t| tcount + re.captures_iter(t).count());
-            println!("{:?}", count);
-        }
-        self.word_count = count;
-        count
-    }
-}
-
-// A very "dumb" implementation, but really folks should use a markup language anyway.
-pub fn text_to_html(value: &str) -> String {
-    println!("{}", value);
-    let paras: Vec<_> = value.split("\n\n").collect();
-    let html: String = paras
-        .into_iter()
-        .fold(String::new(), |acc, p| acc + &format!("<p>{p}</p>"));
-    html
-}
-
-#[cfg(test)]
-mod tests {
-    use std::fs;
-    use tempfile::TempPath;
-
-    use super::*;
-
-    #[test]
-    fn test_count() {
-        // Note, it must be a markdown file so we can ensure we're not counting markup, etc.
-        let file = TempPath::from_path("test.md");
-        // so the issue is that ", Three" counts as two. So we need to only count words
-        fs::write(&file, "--- \n One, _Two_, Three".to_string()).expect("Error setting up test.");
-
-        let mut doc = Document {
-            path: file.to_path_buf(),
-            ..Default::default()
-        };
-        assert_eq!(*&doc.count(), 3)
-    }
-
-    #[test]
-    fn text_to_html_makes_ps() {
-        let text = "This should be one paragraph
-
-This, another.";
-        assert_eq!(
-            text_to_html(text),
-            "<p>This should be one paragraph</p><p>This, another.</p>"
-        )
+    /// Probably this needs to go on the project, since we don't necessarily need the document to
+    /// be aware of its markup
+    pub fn update_count(&mut self) {
+        let html = build::to_html(&self.read(), &self.get_markup_language());
+        self.word_count = build::count_words(&html);
     }
 }

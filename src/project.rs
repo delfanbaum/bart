@@ -1,4 +1,4 @@
-use crate::document::{Document, SupportedMarkup};
+use crate::document::Document;
 use serde::{Deserialize, Serialize};
 use std::{
     env::current_dir,
@@ -8,11 +8,19 @@ use std::{
 };
 
 #[derive(Debug, Serialize, Deserialize)]
+pub enum SupportedMarkup {
+    SimplifiedAsciidoc,
+    Asciidoc,
+    Markdown,
+    Text,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
 pub struct BartProject {
     pub name: String,
     pub byline: String,
     pub documents: Vec<Document>,
-    pub markup_language: SupportedMarkup
+    pub markup_language: SupportedMarkup,
 }
 
 impl Default for BartProject {
@@ -21,7 +29,7 @@ impl Default for BartProject {
             name: "A New Project".to_string(),
             byline: "YOUR NAME".to_string(),
             documents: Vec::new(),
-            markup_language: SupportedMarkup::Markdown
+            markup_language: SupportedMarkup::Markdown,
         }
     }
 }
