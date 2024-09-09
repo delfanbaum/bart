@@ -1,3 +1,5 @@
+use std::fs;
+
 use bart::{
     build::Builder,
     cli::{Cli, Commands},
@@ -14,13 +16,13 @@ fn main() {
             byline,
             directory,
         } => BartProject::init(name, byline, directory),
-        Commands::Add { file, position: _ } => {
+        Commands::Add { file, position } => {
             let mut project = BartProject::read_in_project();
             let doc = Document {
                 path: [file].iter().collect(),
                 ..Default::default()
             };
-            project.add_document(doc)
+            project.add_document(doc, position)
         }
         Commands::Build { format, file } => {
             let project = match file {
@@ -33,8 +35,21 @@ fn main() {
             };
             builder.build()
         }
-        _ => {
-            println!("{:?} has not yet been implemented", args.command)
+        Commands::Ls => {
+            let project = BartProject::read_in_project();
+            project.print_list()
         }
+        Commands::Move { document, position } => {
+            let mut project = BartProject::read_in_project();
+            project.move_document(document, position)
+        }
+        Commands::Remove { file, delete } => {
+            let mut project = BartProject::read_in_project();
+            project.documents.retain(|doc| doc.file_name() != file);
+            if delete {
+                fs::remove_file(file).expect("Unable to delete file");
+            }
+        }
+        Commands::Counts { file: _ } => todo!(),
     }
 }

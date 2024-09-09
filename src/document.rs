@@ -31,6 +31,11 @@ impl Document {
         }
     }
 
+    /// Convenience function
+    pub fn file_name(&self) -> String {
+        self.path.file_name().unwrap().to_str().unwrap().to_string()
+    }
+
     pub fn read(&self) -> String {
         fs::read_to_string(&self.path).expect("Error reading file {self.path}")
     }

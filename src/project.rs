@@ -5,7 +5,9 @@ use std::{
     fs,
     io::Write,
     path::{Path, PathBuf},
+    usize,
 };
+use tabled::builder::Builder;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub enum SupportedMarkup {
@@ -86,13 +88,28 @@ impl BartProject {
         }
     }
 
-    pub fn add_document(&mut self, doc: Document) {
+    pub fn add_document(&mut self, doc: Document, position: Option<usize>) {
         if !doc.path.is_file() {
             let mut f = fs::File::create(&doc.path).expect("Unable to create {doc}.");
             f.write_all("".as_bytes())
                 .expect("Unable to write to {doc}.");
         }
-        self.documents.push(doc);
+        if position.is_some() {
+            self.documents.insert(position.unwrap(), doc)
+        } else {
+            self.documents.push(doc);
+        }
+        self.save()
+    }
+
+    pub fn move_document(&mut self, doc_pos: usize, new_pos: usize) {
+        let doc = self.documents.remove(doc_pos);
+        // if it's the last, put it last without worrying about the index
+        if new_pos > self.documents.len() {
+            self.documents.push(doc);
+        } else {
+            self.documents.insert(new_pos, doc);
+        }
         self.save()
     }
 
@@ -109,6 +126,24 @@ impl BartProject {
         project_dir.set_extension("toml");
         fs::write(project_dir, project_toml)
             .expect("Unable to write configuration to {project_dir}");
+    }
+
+    pub fn print_list(self) {
+        let mut builder = Builder::new();
+        builder.push_record([
+            "Pos.".to_string(),
+            "Document".to_string(),
+            "Description".to_string(),
+        ]);
+        for (pos, doc) in self.documents.iter().enumerate() {
+            let mut display_desc = doc.description.clone();
+            if doc.description.len() > 25 {
+                display_desc.truncate(20);
+                display_desc.push_str("...");
+            }
+
+            builder.push_record([pos.to_string(), doc.file_name(), display_desc])
+        }
     }
 }
 

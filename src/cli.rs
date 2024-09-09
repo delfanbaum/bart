@@ -26,28 +26,27 @@ pub enum Commands {
     /// Lists the documents (in order) included in the project
     Ls,
 
-    /// Adds a file to the end of the project, creating it if necessary
+    /// Adds a file to the end of the project, creating it if necessary, optionally inserting it at
+    /// a given position in the document list.
     Add {
         file: String,
         #[arg(short, long)]
-        position: Option<u8>,
+        position: Option<usize>,
     },
 
-    /// Removes a file (by name or position) to the end of the project, optionally deleting it
+    /// Removes a file from the project list, optionally deleting it
     Remove {
-        #[arg(short, long)]
-        file: Option<String>,
+        file: String,
         #[arg(short, long)]
         delete: bool,
     },
 
-    // TODO figure out an indexing scheme that makes sense; maybe moves to position, moving
-    // everything else down
-    /// Moves a document to the provided position in the project
+    /// Moves a document (by position) to some other in the project (zero-indexed). To see
+    /// the current document positions, run `bart ls`
     Move {
-        file: String,
+        document: usize,
         #[arg(short, long)]
-        position: u8,
+        position: usize,
     },
 
     // Output
@@ -62,5 +61,6 @@ pub enum Commands {
     },
 
     // will do word counting
-    Counts
+    /// Refresh word counts for the project and print them, or optionally do this for a single file
+    Counts { file: Option<String> },
 }
