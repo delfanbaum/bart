@@ -42,7 +42,7 @@ fn main() {
         }
         Commands::Ls => {
             let project = BartProject::read_in_project();
-            project.print_list()
+            println!("{}", project.print_list())
         }
         Commands::Move { document, position } => {
             let mut project = BartProject::read_in_project();

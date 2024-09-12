@@ -7,7 +7,7 @@ use std::{
     path::{Path, PathBuf},
     usize,
 };
-use tabled::builder::Builder;
+use tabled::{builder::Builder, settings::Style as TabledStyle};
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct BartProject {
@@ -130,7 +130,7 @@ impl BartProject {
             .expect("Unable to write configuration to {project_dir}");
     }
 
-    pub fn print_list(self) {
+    pub fn print_list(self) -> String {
         let mut builder = Builder::new();
         builder.push_record([
             "Pos.".to_string(),
@@ -146,6 +146,8 @@ impl BartProject {
 
             builder.push_record([pos.to_string(), doc.file_name(), display_desc])
         }
+        println!(); // blank line for beauty reasons
+        builder.build().with(TabledStyle::psql()).to_string()
     }
 }
 
