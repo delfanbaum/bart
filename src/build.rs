@@ -6,7 +6,7 @@ use markdown;
 use regex::Regex;
 use scraper::{Html, Selector};
 
-use crate::{project::BartProject, project::SupportedMarkup};
+use crate::{project::BartProject, markup::SupportedMarkup};
 
 #[derive(Debug, ValueEnum, Clone, Copy, PartialEq, Eq)]
 pub enum BuildTargets {
@@ -32,7 +32,7 @@ pub struct Builder {
 
 impl Builder {
     pub fn build(&self) {
-        let out_file_name = &self.project.name.clone().replace(" ", "-");
+        let out_file_name = &self.project.name.clone().replace(' ', "-");
         let html = self.project_to_html();
         match &self.target {
             BuildTargets::Html => {
@@ -50,7 +50,11 @@ impl Builder {
         let mut html_strings = Vec::new();
         for doc in self.project.documents.iter() {
             let html = to_html(&doc.read(), &self.project.markup_language);
-            html_strings.push(html)
+            html_strings.push(html);
+            // add a break if configured to do so
+            if self.project.break_between_documents {
+                html_strings.push("\n\n<hr />\n\n".to_string())
+            }
         }
         html_strings
     }
@@ -60,7 +64,6 @@ impl Builder {
 pub fn to_html(text: &str, markup: &SupportedMarkup) -> String {
     match markup {
         SupportedMarkup::Asciidoc => todo!(),
-        SupportedMarkup::SimplifiedAsciidoc => todo!(),
         SupportedMarkup::Markdown => markdown::to_html(text),
         SupportedMarkup::Text => text_to_html(text),
     }

@@ -1,7 +1,7 @@
 use core::panic;
 use std::{fs, path::PathBuf};
 
-use crate::{build, project::SupportedMarkup};
+use crate::{build, markup::SupportedMarkup};
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize)]

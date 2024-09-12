@@ -1,4 +1,4 @@
-use crate::document::Document;
+use crate::{document::Document, markup::SupportedMarkup};
 use serde::{Deserialize, Serialize};
 use std::{
     env::current_dir,
@@ -10,28 +10,22 @@ use std::{
 use tabled::builder::Builder;
 
 #[derive(Debug, Serialize, Deserialize)]
-pub enum SupportedMarkup {
-    SimplifiedAsciidoc,
-    Asciidoc,
-    Markdown,
-    Text,
-}
-
-#[derive(Debug, Serialize, Deserialize)]
 pub struct BartProject {
     pub name: String,
     pub byline: String,
-    pub documents: Vec<Document>,
     pub markup_language: SupportedMarkup,
+    pub break_between_documents: bool,
+    pub documents: Vec<Document>,
 }
 
 impl Default for BartProject {
     fn default() -> Self {
         BartProject {
             name: "A New Project".to_string(),
-            byline: "YOUR NAME".to_string(),
-            documents: Vec::new(),
+            byline: "Your Name".to_string(),
             markup_language: SupportedMarkup::Markdown,
+            break_between_documents: false,
+            documents: Vec::new(),
         }
     }
 }
@@ -78,9 +72,9 @@ impl BartProject {
         project
     }
 
-    /// Creates a project from a file, usually for the purposes of building a file (where we may
-    /// not always need/want to have a project associated, e.g., a short story in a single markdown
-    /// file).
+    /// Creates a project from a single file, usually for the purposes of building a file (where we
+    /// may not always need/want to have a project associated, e.g., a short story in a single
+    /// markdown file).
     ///
     /// TODO: pull in any config from the project TOML if present, e.g., custom styling
     pub fn from_file(file: String) -> BartProject {
@@ -102,8 +96,8 @@ impl BartProject {
             f.write_all("".as_bytes())
                 .expect("Unable to write to {doc}.");
         }
-        if position.is_some() {
-            self.documents.insert(position.unwrap(), doc)
+        if let Some(position) = position {
+            self.documents.insert(position, doc)
         } else {
             self.documents.push(doc);
         }

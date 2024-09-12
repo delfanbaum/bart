@@ -16,10 +16,15 @@ fn main() {
             byline,
             directory,
         } => BartProject::init(name, byline, directory),
-        Commands::Add { file, position } => {
+        Commands::Add {
+            file,
+            position,
+            description,
+        } => {
             let mut project = BartProject::read_in_project();
             let doc = Document {
                 path: [file].iter().collect(),
+                description: description.unwrap_or("".to_string()),
                 ..Default::default()
             };
             project.add_document(doc, position)

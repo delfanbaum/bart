@@ -27,11 +27,12 @@ pub enum Commands {
     Ls,
 
     /// Adds a file to the end of the project, creating it if necessary, optionally inserting it at
-    /// a given position in the document list.
+    /// a given position in the document list. Optionally add a description.
     Add {
         file: String,
         #[arg(short, long)]
         position: Option<usize>,
+        description: Option<String>,
     },
 
     /// Removes a file from the project list, optionally deleting it
