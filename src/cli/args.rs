@@ -63,4 +63,7 @@ pub enum Commands {
     // will do word counting
     /// Refresh word counts for the project and print them, or optionally do this for a single file
     Counts { file: Option<String> },
+
+    /// Opens the corkboard TUI app
+    Corkboard,
 }

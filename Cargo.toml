@@ -6,11 +6,13 @@ edition = "2021"
 [dependencies]
 anyhow = "1.0.86"
 clap = { version = "4.5.17", features = ["derive"] }
+crossterm = "0.28.1"
 markdown = "1.0.0-alpha.20"
+ratatui = "0.28.1"
 regex = "1.10.6"
 scraper = "0.20.0"
 serde = {version="1.0.209", features=["derive"]}
-tabled = "0.16.0"
+tabled = "0.15.0"
 toml = "0.8.19"
 
 [dev-dependencies]

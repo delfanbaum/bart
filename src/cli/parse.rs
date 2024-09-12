@@ -1,5 +1,5 @@
 use super::args::{Cli, Commands};
-use crate::{build::Builder, document::Document, project::BartProject};
+use crate::{build::Builder, document::Document, project::BartProject, tui};
 use clap::Parser;
 use std::fs;
 
@@ -54,5 +54,6 @@ pub fn parse() {
             }
         }
         Commands::Counts { file: _ } => todo!(),
+        Commands::Corkboard => tui::main().expect("Unable to open the corkboard"),
     }
 }
