@@ -67,6 +67,14 @@ impl BartProject {
         let toml_file = get_project_toml();
         let toml = fs::read_to_string(toml_file).expect("Unable to read in project configuration");
         let project: BartProject = toml::from_str(&toml).unwrap();
+        for doc in project.documents.iter() {
+            if !doc.path.is_file() {
+                eprintln!(
+                    "{} appears to be missing. Please fix the path in .bart.toml",
+                    doc.file_name()
+                )
+            }
+        }
         project
     }
 
