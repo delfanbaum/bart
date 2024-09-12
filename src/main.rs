@@ -44,9 +44,12 @@ fn main() {
             let project = BartProject::read_in_project();
             println!("{}", project.print_list())
         }
-        Commands::Move { document, position } => {
+        Commands::Move {
+            document_position,
+            new_position,
+        } => {
             let mut project = BartProject::read_in_project();
-            project.move_document(document, position)
+            project.move_document(document_position, new_position)
         }
         Commands::Remove { file, delete } => {
             let mut project = BartProject::read_in_project();

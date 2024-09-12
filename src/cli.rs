@@ -45,9 +45,8 @@ pub enum Commands {
     /// Moves a document (by position) to some other in the project (zero-indexed). To see
     /// the current document positions, run `bart ls`
     Move {
-        document: usize,
-        #[arg(short, long)]
-        position: usize,
+        document_position: usize,
+        new_position: usize,
     },
 
     // Output
